@@ -78,9 +78,9 @@ CHECKPOINT_FILENAME = "best_model.pth"
 RANDOM_SEED = 42
 
 # Streamlit settings
-STREAMLIT_TITLE = "Plant Disease Classification"
+STREAMLIT_TITLE = "Potatoes Disease Classification"
 STREAMLIT_DESCRIPTION = """
-Upload a plant leaf image to detect diseases. 
+Upload a potatoes plant leaf image to detect diseases. 
 This model can classify three conditions: Early Blight, Healthy, and Late Blight.
 """
 CONFIDENCE_THRESHOLD = 0.5
