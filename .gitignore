@@ -4,3 +4,6 @@ checkpoints/
 Dataset/**/*.jpg
 Dataset/**/*.png
 Dataset/**/*.jpeg
+
+__pycache__/
+*.pyc
