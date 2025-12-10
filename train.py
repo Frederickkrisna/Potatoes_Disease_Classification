@@ -13,16 +13,8 @@ from tqdm import tqdm
 import config
 from model import create_model
 
-
+# Early stopping to stop training when validation loss doesn't improve.
 class EarlyStopping:
-    """
-    Early stopping to stop training when validation loss doesn't improve.
-    
-    Args:
-        patience: Number of epochs to wait before stopping
-        min_delta: Minimum change to qualify as improvement
-        verbose: Whether to print early stopping messages
-    """
     
     def __init__(self, patience: int = 5, min_delta: float = 0.0, verbose: bool = True):
         self.patience = patience
@@ -34,16 +26,6 @@ class EarlyStopping:
         self.best_epoch = 0
     
     def __call__(self, val_loss: float, epoch: int) -> bool:
-        """
-        Check if training should be stopped.
-        
-        Args:
-            val_loss: Current validation loss
-            epoch: Current epoch number
-            
-        Returns:
-            True if training should stop, False otherwise
-        """
         if self.best_loss is None:
             self.best_loss = val_loss
             self.best_epoch = epoch
@@ -65,20 +47,6 @@ class EarlyStopping:
 
 
 class Trainer:
-    """
-    Trainer class for managing the training pipeline.
-    
-    Args:
-        model: PyTorch model to train
-        train_loader: DataLoader for training data
-        val_loader: DataLoader for validation data
-        criterion: Loss function
-        optimizer: Optimizer
-        scheduler: Learning rate scheduler
-        device: Device to train on
-        model_name: Name for saving checkpoints
-    """
-    
     def __init__(
         self,
         model: nn.Module,
@@ -118,12 +86,6 @@ class Trainer:
         self.best_epoch = 0
     
     def train_epoch(self) -> Tuple[float, float]:
-        """
-        Train for one epoch.
-        
-        Returns:
-            Tuple of (average loss, accuracy)
-        """
         self.model.train()
         running_loss = 0.0
         correct = 0
@@ -164,12 +126,6 @@ class Trainer:
         return epoch_loss, epoch_acc
     
     def validate(self) -> Tuple[float, float]:
-        """
-        Validate the model.
-        
-        Returns:
-            Tuple of (average loss, accuracy)
-        """
         self.model.eval()
         running_loss = 0.0
         correct = 0
@@ -204,13 +160,6 @@ class Trainer:
         return epoch_loss, epoch_acc
     
     def save_checkpoint(self, epoch: int, is_best: bool = False):
-        """
-        Save model checkpoint.
-        
-        Args:
-            epoch: Current epoch number
-            is_best: Whether this is the best model so far
-        """
         checkpoint_path = config.CHECKPOINT_DIR / f"{self.model_name}_checkpoint.pth"
         best_path = config.CHECKPOINT_DIR / f"{self.model_name}_best.pth"
         
@@ -237,16 +186,7 @@ class Trainer:
         num_epochs: int = config.NUM_EPOCHS,
         early_stopping_patience: int = config.EARLY_STOPPING_PATIENCE
     ) -> Dict:
-        """
-        Complete training loop.
-        
-        Args:
-            num_epochs: Number of epochs to train
-            early_stopping_patience: Patience for early stopping
-            
-        Returns:
-            Training history dictionary
-        """
+        # Complete training loop.
         early_stopping = EarlyStopping(patience=early_stopping_patience, verbose=True)
         
         print(f"\n{'='*60}")
@@ -341,20 +281,6 @@ def train_model(
     learning_rate: float = config.LEARNING_RATE,
     device: torch.device = config.DEVICE
 ) -> Tuple[nn.Module, Dict]:
-    """
-    High-level function to train a model.
-    
-    Args:
-        model_type: Type of model ('cnn' or 'resnet')
-        train_loader: Training DataLoader
-        val_loader: Validation DataLoader
-        num_epochs: Number of epochs to train
-        learning_rate: Learning rate
-        device: Device to train on
-        
-    Returns:
-        Tuple of (trained model, training history)
-    """
     # Create model
     model = create_model(model_type, device)
     
@@ -396,13 +322,11 @@ def train_model(
 
 
 if __name__ == "__main__":
-    # Test training pipeline
     print("Testing training pipeline...")
     
     try:
         from data import create_dataloaders
-        
-        # Create dataloaders
+
         print("Creating dataloaders...")
         train_loader, val_loader, test_loader = create_dataloaders()
         

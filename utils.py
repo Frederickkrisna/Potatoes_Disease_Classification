@@ -1,6 +1,3 @@
-"""
-Utility functions for plotting, model management, and benchmarking.
-"""
 import os
 import time
 from pathlib import Path
@@ -18,14 +15,6 @@ def plot_training_history(
     save_path: Optional[Path] = None,
     model_name: str = "model"
 ):
-    """
-    Plot training and validation loss/accuracy curves.
-    
-    Args:
-        history: Dictionary containing training history
-        save_path: Path to save the plot
-        model_name: Name of the model for the title
-    """
     fig, axes = plt.subplots(1, 2, figsize=(15, 5))
     
     epochs = range(1, len(history['train_loss']) + 1)
@@ -62,14 +51,6 @@ def plot_learning_rate(
     save_path: Optional[Path] = None,
     model_name: str = "model"
 ):
-    """
-    Plot learning rate schedule.
-    
-    Args:
-        history: Dictionary containing training history
-        save_path: Path to save the plot
-        model_name: Name of the model for the title
-    """
     if 'learning_rates' not in history:
         print("No learning rate information in history")
         return
@@ -100,16 +81,6 @@ def plot_confusion_matrix(
     model_name: str = "model",
     normalize: bool = False
 ):
-    """
-    Plot confusion matrix.
-    
-    Args:
-        cm: Confusion matrix
-        class_names: List of class names
-        save_path: Path to save the plot
-        model_name: Name of the model for the title
-        normalize: Whether to normalize the confusion matrix
-    """
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         fmt = '.2%'
@@ -149,17 +120,6 @@ def plot_sample_predictions(
     num_samples: int = 9,
     save_path: Optional[Path] = None
 ):
-    """
-    Plot sample images with their true and predicted labels.
-    
-    Args:
-        images: Batch of images
-        true_labels: True labels
-        pred_labels: Predicted labels
-        class_names: List of class names
-        num_samples: Number of samples to plot
-        save_path: Path to save the plot
-    """
     num_samples = min(num_samples, len(images))
     cols = 3
     rows = (num_samples + cols - 1) // cols
@@ -212,16 +172,6 @@ def save_model(
     epoch: Optional[int] = None,
     additional_info: Optional[Dict] = None
 ):
-    """
-    Save model checkpoint with optional additional information.
-    
-    Args:
-        model: PyTorch model to save
-        save_path: Path to save the model
-        optimizer: Optional optimizer to save
-        epoch: Optional epoch number
-        additional_info: Optional dictionary with additional information
-    """
     checkpoint = {
         'model_state_dict': model.state_dict(),
     }
@@ -246,19 +196,8 @@ def load_model(
     load_optimizer: bool = False,
     optimizer: Optional[torch.optim.Optimizer] = None
 ) -> Tuple[nn.Module, Optional[torch.optim.Optimizer], Optional[int]]:
-    """
-    Load model checkpoint.
-    
-    Args:
-        model: PyTorch model to load weights into
-        load_path: Path to load the model from
-        device: Device to load the model on
-        load_optimizer: Whether to load optimizer state
-        optimizer: Optimizer to load state into
-        
-    Returns:
-        Tuple of (model, optimizer, epoch)
-    """
+
+    # Load model checkpoint.
     if not os.path.exists(load_path):
         raise FileNotFoundError(f"Model file not found: {load_path}")
     
@@ -287,18 +226,7 @@ def benchmark_model(
     device: torch.device = config.DEVICE,
     num_iterations: int = 100
 ) -> Dict[str, float]:
-    """
-    Benchmark model inference performance.
-    
-    Args:
-        model: PyTorch model to benchmark
-        dataloader: DataLoader for data
-        device: Device to run on
-        num_iterations: Number of iterations to benchmark
-        
-    Returns:
-        Dictionary with benchmark results
-    """
+    # Benchmark model inference performance.
     model.eval()
     model = model.to(device)
     
@@ -348,13 +276,6 @@ def benchmark_model(
 
 
 def print_benchmark_results(results: Dict[str, float], model_name: str = "Model"):
-    """
-    Print benchmark results in a formatted table.
-    
-    Args:
-        results: Dictionary with benchmark results
-        model_name: Name of the model
-    """
     print(f"\n{'='*60}")
     print(f"{model_name} Benchmark Results")
     print(f"{'='*60}")
@@ -373,15 +294,6 @@ def compare_models(
     model1_name: str = "Model 1",
     model2_name: str = "Model 2"
 ):
-    """
-    Compare benchmark results of two models.
-    
-    Args:
-        results1: Benchmark results for first model
-        results2: Benchmark results for second model
-        model1_name: Name of first model
-        model2_name: Name of second model
-    """
     print(f"\n{'='*80}")
     print(f"Model Comparison: {model1_name} vs {model2_name}")
     print(f"{'='*80}")
@@ -404,7 +316,6 @@ def compare_models(
 
 
 if __name__ == "__main__":
-    # Test utility functions
     print("Testing utility functions...")
     
     # Test plotting with dummy data

@@ -1,7 +1,3 @@
-"""
-Model architectures for plant disease classification.
-Includes Custom CNN and ResNet50 transfer learning models.
-"""
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -9,21 +5,12 @@ from torchvision import models
 from typing import Dict, Tuple
 import config
 
-
+# Custom CNN architecture with 4 convolutional layers.
+#     Architecture:
+#         - 4 Conv blocks (Conv2D -> BatchNorm -> ReLU -> MaxPool)
+#         - Adaptive Average Pooling
+#         - Fully connected layers with Dropout
 class CustomCNN(nn.Module):
-    """
-    Custom CNN architecture with 4 convolutional layers.
-    
-    Architecture:
-        - 4 Conv blocks (Conv2D -> BatchNorm -> ReLU -> MaxPool)
-        - Adaptive Average Pooling
-        - Fully connected layers with Dropout
-    
-    Args:
-        num_classes: Number of output classes
-        dropout_rate: Dropout probability
-    """
-    
     def __init__(self, num_classes: int = config.NUM_CLASSES, dropout_rate: float = config.DROPOUT_RATE):
         super(CustomCNN, self).__init__()
         
@@ -64,7 +51,6 @@ class CustomCNN(nn.Module):
         self._initialize_weights()
     
     def _initialize_weights(self):
-        """Initialize model weights using He initialization."""
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
@@ -78,15 +64,6 @@ class CustomCNN(nn.Module):
                 nn.init.constant_(m.bias, 0)
     
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Forward pass through the network.
-        
-        Args:
-            x: Input tensor of shape (batch_size, 3, height, width)
-            
-        Returns:
-            Output tensor of shape (batch_size, num_classes)
-        """
         # Conv Block 1
         x = self.conv1(x)
         x = self.bn1(x)
@@ -155,19 +132,9 @@ Architecture:
 """
         return summary
 
-
+# ResNet50 transfer learning model.
+#     Uses pretrained ResNet50 on ImageNet with option to fine-tune last N layers.
 class ResNet50Transfer(nn.Module):
-    """
-    ResNet50 transfer learning model.
-    
-    Uses pretrained ResNet50 on ImageNet with option to fine-tune last N layers.
-    
-    Args:
-        num_classes: Number of output classes
-        pretrained: Whether to use pretrained weights
-        fine_tune_layers: Number of last layers to fine-tune (0 = freeze all)
-    """
-    
     def __init__(
         self,
         num_classes: int = config.NUM_CLASSES,
@@ -201,8 +168,8 @@ class ResNet50Transfer(nn.Module):
         # Freeze layers if specified
         self._freeze_layers()
     
+    # Freeze all layers except the last N layers for fine-tuning.
     def _freeze_layers(self):
-        """Freeze all layers except the last N layers for fine-tuning."""
         if self.fine_tune_layers == 0:
             # Freeze all layers except the classifier
             for param in self.resnet.parameters():
@@ -234,15 +201,6 @@ class ResNet50Transfer(nn.Module):
                     param.requires_grad = True
     
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        """
-        Forward pass through the network.
-        
-        Args:
-            x: Input tensor of shape (batch_size, 3, height, width)
-            
-        Returns:
-            Output tensor of shape (batch_size, num_classes)
-        """
         return self.resnet(x)
     
     def get_model_summary(self) -> str:
@@ -274,17 +232,8 @@ Fine-tuning Strategy:
         return summary
 
 
+# Factory function to create and initialize models.
 def create_model(model_type: str = 'cnn', device: torch.device = config.DEVICE) -> nn.Module:
-    """
-    Factory function to create and initialize models.
-    
-    Args:
-        model_type: Type of model ('cnn' or 'resnet')
-        device: Device to place the model on
-        
-    Returns:
-        Initialized model
-    """
     if model_type.lower() == 'cnn':
         model = CustomCNN(num_classes=config.NUM_CLASSES, dropout_rate=config.DROPOUT_RATE)
         print("Created Custom CNN model")
@@ -307,23 +256,14 @@ def create_model(model_type: str = 'cnn', device: torch.device = config.DEVICE) 
     return model
 
 
+# Count total and trainable parameters in a model.
 def count_parameters(model: nn.Module) -> Tuple[int, int]:
-    """
-    Count total and trainable parameters in a model.
-    
-    Args:
-        model: PyTorch model
-        
-    Returns:
-        Tuple of (total_params, trainable_params)
-    """
     total_params = sum(p.numel() for p in model.parameters())
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
     return total_params, trainable_params
 
 
 if __name__ == "__main__":
-    # Test model creation
     print("Testing model architectures...\n")
     
     # Test Custom CNN
@@ -348,5 +288,3 @@ if __name__ == "__main__":
     output = resnet_model(dummy_input)
     print(f"\nInput shape: {dummy_input.shape}")
     print(f"Output shape: {output.shape}")
-    
-    print("\nModel architecture tests completed successfully!")

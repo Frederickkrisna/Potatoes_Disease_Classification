@@ -1,7 +1,3 @@
-"""
-Main execution script for plant disease classification project.
-Orchestrates training, evaluation, and model management.
-"""
 import argparse
 import sys
 import json
@@ -17,13 +13,10 @@ from utils import (
     plot_training_history,
     plot_learning_rate,
     compare_models,
-    benchmark_model,
-    print_benchmark_results
 )
 
 
 def setup_environment():
-    """Set up the training environment."""
     # Set random seeds for reproducibility
     torch.manual_seed(config.RANDOM_SEED)
     if torch.cuda.is_available():
@@ -45,12 +38,6 @@ def setup_environment():
 
 
 def train_models(args):
-    """
-    Train models based on arguments.
-    
-    Args:
-        args: Command line arguments
-    """
     print("\n" + "="*80)
     print("TRAINING MODE")
     print("="*80 + "\n")
@@ -107,12 +94,6 @@ def train_models(args):
 
 
 def evaluate_models(args):
-    """
-    Evaluate models based on arguments.
-    
-    Args:
-        args: Command line arguments
-    """
     print("\n" + "="*80)
     print("EVALUATION MODE")
     print("="*80 + "\n")
@@ -188,12 +169,6 @@ def evaluate_models(args):
 
 
 def save_evaluation_results(evaluation_results: dict):
-    """
-    Save evaluation results to JSON file.
-    
-    Args:
-        evaluation_results: Dictionary containing evaluation results
-    """
     results_to_save = {}
     
     for model_type, results in evaluation_results.items():
@@ -223,7 +198,6 @@ def save_evaluation_results(evaluation_results: dict):
 
 
 def main():
-    """Main function to parse arguments and execute."""
     parser = argparse.ArgumentParser(
         description="Plant Disease Classification - Training and Evaluation"
     )
