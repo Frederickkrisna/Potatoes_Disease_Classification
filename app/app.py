@@ -46,7 +46,6 @@ def load_trained_model(model_type: str = 'resnet'):
         
         # 3. Cek File & Download dari GDrive jika belum ada
         if not checkpoint_path.exists():
-            st.warning(f"Model {checkpoint_filename} belum ada, mencoba download dari Google Drive...")
             
             # Buat folder checkpoints jika belum ada
             os.makedirs(config.CHECKPOINT_DIR, exist_ok=True)
@@ -61,17 +60,12 @@ def load_trained_model(model_type: str = 'resnet'):
                     url = f'https://drive.google.com/uc?id={file_id}'
                     output = str(checkpoint_path)
                     
-                    # Download...
                     gdown.download(url, output, quiet=False)
                     
-                    if os.path.exists(output):
-                        st.success(f"Berhasil download {model_type}!")
-                    else:
-                        st.error("Download gagal. File tidak muncul.")
                 except Exception as e:
                     st.error(f"Gagal download. Pastikan internet lancar & ID benar. Error: {e}")
             else:
-                st.error(f"⚠️ ID Google Drive untuk **{model_type.upper()}** belum diisi di script 'app.py'!")
+                st.error(f"ID Google Drive untuk **{model_type.upper()}** belum diisi di script 'app.py'!")
                 return None, False
 
         # 4. Load Model Weights
