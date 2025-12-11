@@ -6,7 +6,6 @@ A production-ready PyTorch implementation for classifying plant diseases from le
 
 - **Two Model Architectures**: Custom CNN and ResNet50 transfer learning
 - **Complete Training Pipeline**: With early stopping, learning rate scheduling, and checkpointing
-- **Comprehensive Evaluation**: Confusion matrix, classification reports, and visualizations
 - **Interactive Web App**: Streamlit-based UI for real-time predictions
 - **Production-Ready**: Error handling, logging, type hints, and modular code structure
 
@@ -63,19 +62,47 @@ python main.py --mode evaluate --model all
 
 Launch the web interface:
 ```bash
-streamlit run app.py
+streamlit run app/app.py
 ```
 
 ## Project Structure
 
-- `config.py` - Centralized configuration and hyperparameters
-- `data.py` - Dataset class and data loading utilities
-- `model.py` - Model architectures (Custom CNN and ResNet50)
-- `train.py` - Training pipeline with all training logic
-- `evaluate.py` - Evaluation metrics and visualization
-- `utils.py` - Utility functions for plotting and model management
-- `app.py` - Streamlit web application
-- `main.py` - Main execution script
+## Complete File Structure
+
+```
+Deep-Learning-AOL/
+├── Dataset/                         # Dataset folders
+│   ├── Training/
+│   ├── Validation/
+│   └── Testing/
+│
+├── notebooks/
+│   ├── evaluate_checkpoint.ipynb        # Evaluation of Model Checkpoints
+│   ├── experiment.ipynb                 # Model Training & Experimentation
+│   └── exploration.ipynb                # Data Exploration & Visualization
+│
+├── checkpoints/                     # (Auto-created) Model weights
+├── logs/                            # (Auto-created) Training logs
+├── results/                         # (Auto-created) Evaluation outputs
+├── src/
+│   ├── config.py                        # Centralized configuration and hyperparameters
+│   ├── data.py                          # Data pipeline & DataLoaders
+│   ├── model.py                         # Model architectures (Custom CNN & ResNet50)
+│   ├── train.py                         # Training pipeline
+│   ├── evaluate.py                      # Evaluation & metrics
+│   ├── utils.py                         # Utility functions
+│   ├── main.py                          # Main execution script
+│   └── examples.py                      # Example usage demonstrations
+│
+├── app/
+│   └── app.py                           # Streamlit web application
+│
+├── requirements.txt                 # Dependencies
+├── README.md                        # Project documentation
+├── QUICKSTART.md                    # Quick start guide
+├── PROJECT_SUMMARY.md               # This file
+└── .gitignore                       # Git ignore rules
+```
 
 ## Model Architectures
 
@@ -94,3 +121,17 @@ Results and trained models are saved in:
 - `checkpoints/` - Model weights
 - `logs/` - TensorBoard logs
 - `results/` - Evaluation plots and metrics
+
+## Troubleshooting
+
+### CUDA Out of Memory
+- Reduce batch size: `--batch-size 16`
+- Use fewer workers: `--num-workers 2`
+
+### Dataset Not Found
+- Check Dataset folder structure
+- Verify paths in `config.py`
+
+### Model Checkpoint Not Found
+- Train the model first before evaluation
+- Check `checkpoints/` directory

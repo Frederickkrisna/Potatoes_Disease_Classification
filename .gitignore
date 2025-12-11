@@ -1,4 +1,3 @@
-checkpoints/
 *.pth
 
 Dataset/**/*.jpg
